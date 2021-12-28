@@ -1,4 +1,4 @@
-# # # Função de verificar se a subformula já foi adicionada na lista de subformulas
+# # # Função de verificar se a subformula já foi adicionada nalista de subformulas
 def veriRepe(a, sub):
     if a not in sub:
         return sub.append(a)
@@ -61,7 +61,6 @@ def veriSub(a):
 # # # Função que recebe duas colunas e um operador e retora uma coluna com o reusltado da operação entre elas
 def retornalinha(linha1, operador, linha2):
 
-
     #print("esse é o operador", operador)
     linha3 = [False for i in range(len(linha2))]
 
@@ -75,7 +74,7 @@ def retornalinha(linha1, operador, linha2):
 
     elif operador == ">":
         for i in range(len(linha1)):
-            if linha1[i] == False and linha2[i] == True:
+            if linha1[i] == True and linha2[i] == False:
                 linha3[i] = False
             else:
                 linha3[i] = True
@@ -88,9 +87,6 @@ def retornalinha(linha1, operador, linha2):
 
 # # # Entra com uma parte de uma subformula X e acha que parte é essa na lista de subformulas retornando sua posição na tabela
 def verificalinha(partformula, formula):
-
-    #print(partformula)
-    #print(formula)
     # serve pra fazer um tamanho da lista-1 (primeiro -1), até 0 (-1 do meio), e de forma decrescente (-1 do final)
     for k in range(len(formula)-1, -1, -1):
         if partformula == formula[k]:
@@ -105,19 +101,23 @@ def resolvetabela(formula, tabela, num):
 
     #print(formula,len(formula))
     for i in range(num, len(formula)): #entra com as posições da formula depois dos atomos
+
+        linhadatabela1 = 0
+        linhadatabela2 = 0
+
         if formula[i][0] == "-":
-            
-            #print(formula[i][1:len(formula[i])])  ########## verificador
-            linhadatabela2 = tabela[verificalinha(formula[i][1:len(formula[i])], formula)] ##chama a função passando string na posição i da lista dividida entre seu segundo caracter até o ultimo
-            linhadatabela1 = None
-            conectivo = "-"
-            
-        elif formula[i][0] == "(" and formula[i][-1] == ")":
+            if formula[i][1].isalpha:
+                
+                #print(formula[i][1:len(formula[i])])  ########## verificador
+                linhadatabela2 = tabela[verificalinha(formula[i][1:len(formula[i])], formula)] ##chama a função passando string na posição i da lista dividida entre seu segundo caracter até o ultimo
+                linhadatabela1 = None
+                conectivo = "-"
+        
+        else:
             auxFormula = formula[i][1:len(formula[i])-1]
             
-
             #print("esse é auxFormula", auxFormula)
-            if "(" in auxFormula or ")" in auxFormula:
+            if "(" in auxFormula or ")" in auxFormula or auxFormula[1] == "-":
                 
                 aux = 0
                 posição = 0
@@ -132,7 +132,7 @@ def resolvetabela(formula, tabela, num):
                     if auxFormula[posição] == ")":
                         aux -= 1
                     
-                    if aux <= 0:
+                    if posição > 1 and aux <= 0:
                         ultimoparen = posição
                         posição= len(auxFormula)
 
@@ -149,28 +149,13 @@ def resolvetabela(formula, tabela, num):
                     linhadatabela2 = tabela[verificalinha(auxFormula[ultimoparen+2:len(auxFormula)], formula)]
                     conectivo = auxFormula[ultimoparen+1]
 
-                #percorrer a sting contando os abre parentese e fecha, qnd todos que foram abertos forem fechados
-                #guardar os indicies do primeiro parentese aberto e o ultimo fechado
-                # 2 opções,
-                    
-                    # se o conectivo vier depois do ultimo parentese
-                        # então manda antes do conectivo e depois do conectivo pra verifica linha
-                        #linhanatabela1 = parte com parentese antes do conectivo
-                        #linhanatabela2 = resto da formula depois do conectivo
-
-                    # se o conectivo vier antes do primeiro parentese
-                        # então manda antes do conectivo e depois do conectivo pra verifica linha
-                        #linhanatabela1 = resto da formula depois do conectivo
-                        #linhanatabela2 = parte com parentese antes do conectivo
-
             else:
 
                 for x in range(len(auxFormula)):
                     if auxFormula[x] in CONECTIVOS:
                         
-
-                        print("esse é auxform na posição x",auxFormula[x])
-                        """print((auxFormula[0:x],formula))
+                        """print("esse é auxform na posição x",auxFormula[x])
+                        print((auxFormula[0:x],formula))
                         print(auxFormula[x])
                         print(auxFormula[x+1:len(auxFormula)])
                         print(verificalinha(auxFormula[0:x],formula))
@@ -179,14 +164,6 @@ def resolvetabela(formula, tabela, num):
                         linhadatabela1 = tabela[verificalinha(auxFormula[0:x],formula)]
                         linhadatabela2 = tabela[verificalinha(auxFormula[x+1:len(auxFormula)],formula)]
                         conectivo = auxFormula[x]
-                          
-
-                # procurar pelo primeiro conectivo e dividir a string em duas antes do conectivo e dps do conectivo
-                # e mandar as duas pra verifica linha
-
-
-        #print(linhadatabela1, conectivo, linhadatabela2)
-        #print(retornalinha(linhadatabela1, conectivo, linhadatabela2))
 
         tabela.append(retornalinha(linhadatabela1, conectivo, linhadatabela2))
 
@@ -207,31 +184,12 @@ def criaTabela(subformulas):
         for i in range(2**(num-1-j)):  # repetições dos blocos | entra como 0 de 0 a 2 ^ (3-1-0) = 4
             for k in range(2*(2**j)):  # repetições dos V ou F | entra como 2 * 2 ** 1 = 2
                 if k >= 2**j: 
-                    tabelaVouFTESTE.append(False) 
+                    tabelaVouFTESTE.append(True) 
                 else: 
-                    tabelaVouFTESTE.append(True)
+                    tabelaVouFTESTE.append(False)
         tabela.insert(0,tabelaVouFTESTE)
 
-    tabelaresolvida = resolvetabela(subformulas, tabela, num)
-
-    return tabelaresolvida
-
-    '''
-
-    até aqui temos a tabela com as linhas preenchidas com os valores dos atomos
-    linha 1 = a = [0 1 0 1]
-    linha 2 = b = [0 0 1 1]
-    ...
-
-    dentro da main
-    chama a função de criar a tabela e os atomos(passando num) || retorna tabela dos atomos
-    chama a função que seleciona quem vai ser resolvido dps, tipo, a&b dps a&b#b (passando a tabela dos atomos acima)(função a fazer) || retorna tabela pronta
-            dentro dessa chamada de cima, em um for, chama a função pra resolução das linhas (retornalinha)(função já concluida) || retorna uma linha da tabela resolvida
-
-    retorno da função que seleciona vai ser a tabela pronta pra ser mostrada e pronta pra ser classificada
-
-
-    '''
+    return tabela
 
 ################## ^^^^^ FUNÇÕES DE CRIAR E RESOLVER TABELA VERDADE ^^^^^ ##################
 
@@ -246,13 +204,17 @@ def mostraTabela(formula, a, num):
     espacos = 1
 
     for j in range(pow(2, num)):  # linhas
-
         for i in range(len(formula)):  # colunas
-
             if i+1 < len(formula):
-                espacos = int(len(formula[i+1]) / 2) + \
-                    int(len(formula[i]) / 2) + 1
-                # print("esse é o numero de espaços", espacos)
+
+                if "-" in formula[i]:
+                    espacos = (int(len(formula[i+1]) / 2) + \
+                        int(len(formula[i]) / 2) + 1)-1
+                    # print("esse é o numero de espaços", espacos)
+                else:
+                    espacos = int(len(formula[i+1]) / 2) + \
+                        int(len(formula[i]) / 2) + 1
+                    # print("esse é o numero de espaços", espacos)
             else:
                 espacos = 1
 
@@ -261,8 +223,7 @@ def mostraTabela(formula, a, num):
             else:
                 print("0", end=" "*espacos)
         print()
-
-    print("\n>>> Isso é tudo pe-pessoal <<<\n")
+    print()
 
 # # # Função de classificação de Formulas
 def classificacao(ultimalinha):
@@ -274,113 +235,51 @@ def classificacao(ultimalinha):
             F = F + 1
     
     if T == len(ultimalinha):
-        print("é válida(tautologia) e satisfazível")
+        print(">>> é válida(tautologia) e satisfazível <<<\n")
     elif F == len(ultimalinha):
-        print("é insatisfazível e falsificável")
+        print(">>> é insatisfazível e falsificável <<<\n")
     else:
-        print("satisfazivel e falsificável")
-
+        print(">>> satisfazivel e falsificável <<<\n")
 
 ######################### ^^^^^ FUNÇÕES DE MOSTRAR RESULTADOS ^^^^^ ########################
 
-# # # Função principal para rodar a bagaça
 def main():
-    
-    formula = (input("Digite a fórmula: "))
-    subformula = sorted(veriSub(formula), key=len)
 
-    tabelaresolvida = criaTabela(subformula)
+    print("#"*33)
+    print("  Gerador de Tabela Verdade  ")
+    print("#"*33)
+    print()
 
-    #print(tabelaresolvida)
+    print('Símbolos Átomicos -> {\033[1;32ma, b, c, ..., x, y, z\033[m}')
+    print('Símbolos auxiliares -> {\033[1;32m( )\033[m}')
+    print('{\033[1;32m-\033[m} significando negação')
+    print('{\033[1;32m&\033[m} significando conjução')
+    print('{\033[1;32m#\033[m} significando disjunção')
+    print('{\033[1;32m>\033[m} significando implicação')
+
+    print("Exemplo:\033[1;32m (-(a#b)>(a&b)) \033[m")
+    print()
+
+    formula = input("digite uma formula com ou sem espaços entre os caracteres: ")
+
+    formulasemespaco = ""
+    for i in range(len(formula)):
+        if formula[i] != " ":
+            formulasemespaco = formulasemespaco + formula[i]
+
+    subformula = sorted(veriSub(formulasemespaco), key=len)
     
     num = 0
     for i in range(len(subformula)):
         if len(subformula[i]) == 1:
             num = num + 1
 
+    tabelaAtomos = criaTabela(subformula)
+    
+    tabelaresolvida = resolvetabela(subformula, tabelaAtomos, num)
+    
     mostraTabela(subformula, tabelaresolvida, num)
     classificacao(tabelaresolvida[-1])
 
-
-main()
-
-################################ DAQUI PRA CIMA TA ORGANIZADO ###########################################
-############################### DAQUI PRA BAIXO É A QUESTÃO 2 ###########################################
-
-def comparalogica(formulasResultados, AResultado):
-    
-    formulasResultados = [[True,  True,  True,  False],     #a
-                          [False, False, True,  False],     #b
-                          [True,  False, True,  False],     #c
-                          [True,  True,  False, False]]     #d
-
-    AResultado = [True, True, True, False] 
-
-    casoEspecial = 0
-
-    for i in range(len(formulasResultados)):
-        for j in range(len(formulasResultados[i])):
-
-            if formulasResultados[i][j] == True:
-                if AResultado[j] == False:
-                    return "não é consequência lógica"
-            else: 
-                casoEspecial = casoEspecial + 1
-                if casoEspecial == len(formulasResultados[i]):
-                    return "é consequência lógica"
-
-    return "é consequência lógica"
-
-# # # Função para verificar a consequência lógica
-def consequenciaLogica():
-
-    Formulas = []
-    
-    x = True
-
-    print("\n\nDigite o conjunto de Fórmulas que quer verificar sua cosequencia lógica")
-    while(x == True):
-        Formulas.append(input("\nDigite uma formula: "))
-        aux = input("Digite 1 se quiser adicionar mais uma formula ou, qualquer outra tecla para encerrar conjunto de formulas: ")
-
-        if aux != "1":
-            x = False
-
-    A = input("Agora, digite a formula a ser validada com o conjunto digitado anteriormente: ")
-   
-    print(Formulas)
-    print(A)
-
-    formulasResultados = []
-    for i in range(len(Formulas)):
-        x = criaTabela(Formulas[i])
-
-        formulasResultados.append(x[-1])
-    
-    x = criaTabela(A)
-    AResultado = x[-1]
-
-    comparalogica(formulasResultados, AResultado)
-
-
-"""
-
-"a" "b" "c" |= "((a&b)&c)"
- 0   0   0        0
- 1   1   1        0
- 0                1  
- 1                1
-
-
-
-
-
-"""
-'''
-a = [[]]
-b = []
-#consequenciaLogica()
-print(comparalogica(a, b))
-
-'''
-
+if __name__ == "__main__":
+    main()
