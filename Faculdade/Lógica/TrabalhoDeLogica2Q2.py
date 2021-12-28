@@ -1,10 +1,6 @@
+from TrabalhoDeLogica2Q2 import criaTabela, mostraTabela, resolvetabela, veriSub, verificalinha
 
-
-from deu_errado_ta_dando_certo_Q1 import criaTabela, mostraTabela, resolvetabela, veriSub, verificalinha
-
-
-
-
+# # # Função que identifica as colunas das formulas digitadas e retorna o resultado
 def resolveconsequencialogica(formulas, tabelageral, conjuntoForm_Entrada, aForm_entrada):
 
     conjuntoForm = conjuntoForm_Entrada.split(",",conjuntoForm_Entrada.count(','))
@@ -19,7 +15,6 @@ def resolveconsequencialogica(formulas, tabelageral, conjuntoForm_Entrada, aForm
     #print(id_A)  |  8
 
     for j in range(len(tabelageral[0])): ## verifica linha por linha das colunas abaixo
-
         contVerdade = 0
         for i in id_formulas: ## colunas referente a lista de subformulas [7, 4, 6] 
             #print("esse é o i",i)
@@ -28,14 +23,14 @@ def resolveconsequencialogica(formulas, tabelageral, conjuntoForm_Entrada, aForm
 
         #print(contVerdade)
         if contVerdade == len(id_formulas) and tabelageral[id_A][j] == False:
-            return "não é consequencia logica"
+            return ">>> NÃO É CONSEQUÊNCIA LÓGICA <<<\n"
 
-    return "é consequencia logica"
+    return ">>> É CONSEQUÊNCIA LÓGICA <<<\n"
 
-
+# # # Função para gerar uma formula conjunta para poder resolver
 def organizaconjntoformulas(conjuntoForm_Entrada,aForm_entrada):
     
-#gerar subconjunto de A
+    #gerar subconjunto de A
     aForm_Subaux = sorted((veriSub(aForm_entrada)), key = len)
 
     aForm_Subf = []
@@ -43,12 +38,11 @@ def organizaconjntoformulas(conjuntoForm_Entrada,aForm_entrada):
         if not i.isalpha():
             aForm_Subf.append(i)
 
-#separar o conjunto das formulas
+    #separar o conjunto das formulas
     conjuntoForm = conjuntoForm_Entrada.split(",",conjuntoForm_Entrada.count(','))
     #print(conjuntoForm)
 
-#gerar os subconjunto das formulas
-
+    #gerar os subconjunto das formulas
     conjuntoForm_Subaux = []
     for i in range(len(conjuntoForm)):
         conjuntoForm_Subaux = conjuntoForm_Subaux + veriSub(conjuntoForm[i])
@@ -64,27 +58,47 @@ def organizaconjntoformulas(conjuntoForm_Entrada,aForm_entrada):
 
     return (conjuntoForm_Subf + aForm_Subf)
 
-
+# # # Função principal
 def main():
 
-#entradas
-    #ex. de formato de entrada: (a&b),(a#c),(b&c)
-    conjuntoForm_Entrada = input("digite uma formula de consequencia logica no formato acima")
+    print("#"*36)
+    print(" Verificador de Consequência Lógica  ")
+    print("#"*36)
+    print()
+
+    print("As formulas devem ter o seguinte formato:")
+    print('Símbolos Átomicos -> {\033[1;32ma, b, c, ..., x, y, z\033[m}')
+    print('Símbolos auxiliares -> {\033[1;32m( )\033[m}')
+    print('{\033[1;32m-\033[m} significando negação')
+    print('{\033[1;32m&\033[m} significando conjução')
+    print('{\033[1;32m#\033[m} significando disjunção')
+    print('{\033[1;32m>\033[m} significando implicação')
+
+    print("Exemplo:\033[1;32m (-(a#b)>(a&b)) \033[m")
+    print()
+
+    print("O conjunto de fórmulas Γ deve ter o seguinte formato:")
+    print('{\033[1;32m(formula),(formula),...,(formula)\033[m} tendo uma {\033[1;32m,\033[m} virgula entre cada formula')
+    print("Exemplo:\033[1;32m (a#b),(b&c),(c>a) \033[m")
+    print()
+
+    #entradas
+    #ex. de formato de entrada: (a&b),((a#c)&b),-(b&c)
+    conjuntoForm_Entrada = input("Digite o conjunto de fórmulas Γ no formato acima: ")
     
     #ex. de formato de entrada: (a>b)
-    aForm_entrada = input("digite a formula a ser comparada")
+    aForm_entrada = input("Agora digite a formula A à ser comparada: ")
     
 
-#achar os atomos
+    #achar os atomos
     aux = conjuntoForm_Entrada + aForm_entrada
 
     atomos = []
     for i in range(len(aux)):
         if aux[i].isalpha() and aux[i] not in atomos:
             atomos.append(aux[i])
-    #atomos
 
-#gerar a tabela dos atomos
+    #gerar a tabela dos atomos
     tabelaAtomos = criaTabela(atomos)
     #print(tabelaAtomos)
 
