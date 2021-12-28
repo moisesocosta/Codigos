@@ -1,14 +1,3 @@
-"""
-3° Trabalho - Disciplina de Lógica para Computação
-    Equipe:
-        Roberio Girão Pinho
-        Moises Oliveira Costa
-        Leonardo de Freitas Rabelo
-
-    Turma 2021.1 - T02
-
-"""
-
 def hornsat(C):
 
     #caso c for um conjunto vazio
@@ -46,7 +35,6 @@ def hornsat(C):
 
             return hornsat(Clinha)
 
-
 def main():
 
     #Mostrar o menu
@@ -57,7 +45,6 @@ def main():
 
     #Usuário vai digitar a quantidade de cláusulas
     numClausula = int(input("Digite quantas clausulas deseja verificar: "))
-    
     print("Digite uma clausula por vez e a seguir pressione enter para adicionar:\n\n EXEMPLO:\n\n 1\n 2,1,4\n-3,1,-2\n-1,3,-2\n\n")
 
     c = []
@@ -69,7 +56,7 @@ def main():
     for i in range(len(c)):
         Cinteiro.append(list(map(int, c[i].split(","))))
             
-    print("Essas são as suas clausulas: ",Cinteiro)
+    print("Essas são as suas calusulas: ",Cinteiro)
     print()
     
     x = hornsat(Cinteiro)
