@@ -1,13 +1,3 @@
-"""
-3° Trabalho 2° parte - Disciplina de Lógica para Computação
-    Equipe:
-        Roberio Girão Pinho
-        Moises Oliveira Costa
-        Leonardo de Freitas Rabelo
-
-    Turma 2021.1 - T02
-
-"""
 def simplifica(C):
 
     #caso c for um conjunto vazio
@@ -51,10 +41,7 @@ def _2sat(C):
 
     novoC = simplifica(C)
 
-    if [] in novoC:
-        return novoC
-
-    while novoC != [[]] and len(novoC) != 0:
+    while [] not in novoC and len(novoC) != 0:
 
         p = novoC[0][0]
         if p < 0:
@@ -73,10 +60,7 @@ def _2sat(C):
             novoC = novoClinha 
 
     #caso c for um conjunto vazio
-    if novoC == [[]]: 
-        return novoC
-    else: 
-        return novoC
+    return novoC
 
 def main():
     #Mostrar o menu
@@ -87,7 +71,6 @@ def main():
 
     #Usuário vai digitar a quantidade de cláusulas
     numClausula = int(input("Digite quantas clausulas deseja verificar: "))
-    #mininu, vai pra tua prova mininu
     print("Digite uma clausula por vez e a seguir pressione enter para adicionar:\n\n EXEMPLO:\n\n 1\n 2,1,4\n-3,1,-2\n-1,3,-2\n\n")
 
     c = []
