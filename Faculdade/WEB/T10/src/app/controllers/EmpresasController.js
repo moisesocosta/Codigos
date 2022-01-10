@@ -1,13 +1,16 @@
-let empresas = [
-    {id: 1, name: "Facebook", site: "http://facebook.com"},
-    {id: 2, name: "Google", site: "http://google.com"},
-    {id: 3, name: "Hostgator", site: "http://hostgator.com"}
-]
+import Empresa from "../models/Empresa"
 
 class EmpresasController{
     //Listar
-    index(req, res){
-        res.json(empresas);
+    async index(req, res){
+        try{
+            const data = await Empresa.findAll({
+                limit: 1000,
+            })
+            return res.json(data)
+        }catch(e){
+            console.log("Erro: ", e)
+        }
     }
 
     //Recupera uma empresa
