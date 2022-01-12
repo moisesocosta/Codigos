@@ -1,4 +1,4 @@
-import Sequelize, {Model} from 'sequelize'
+import Sequelize, {Model} from "sequelize"
 
 class Empresa extends Model{
     static init(sequelize){
@@ -12,6 +12,10 @@ class Empresa extends Model{
                 sequelize,  
             }
         )
+    }
+
+    static associate(models){
+        this.hasMany(models.Contato)
     }
 }
 

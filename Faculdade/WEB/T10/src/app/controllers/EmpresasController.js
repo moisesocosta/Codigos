@@ -14,43 +14,61 @@ class EmpresasController{
     }
 
     //Recupera uma empresa
-    show(req, res){
-        const id = parseInt(req.params.id);
-        const empresa = empresas.find(items => items.id === id);
-        const status = empresa ? 200:404;
-        return res.status(status).json(empresa);
+    async show(req, res){
+        try{
+            const id = parseInt(req.params.id)
+            const empresa = await Empresa.findByPk(id)
+            const status = empresa ? 200:404
+
+            return res.status(status).json(empresa)
+        }catch(e){
+            console.log("Erro: " + e)
+        }
     }
 
     //Cria uma empresa
-    create(req, res){
-        const {name, site} = req.body;
-        const id = empresas[empresas.lenght - 1].id + 1;
-        const novaEmpresa = {id, name, site};
-        empresas.push(novaEmpresa);
-        return res.status(201).json(novaEmpresa);
+    async create(req, res){
+        try{
+            const {name, site, status} = req.body
+            const novaEmpresa = await Empresa.create({
+                name, site, status
+            })
+
+            return res.status(201).json(novaEmpresa)
+        }catch(e){
+            console.log("Erro: " + e)
+        }
     }
 
     //Atualiza uma empresa
-    update(req, res){
-        const {name, site} = req.body;
-        const id = parseInt(req.params.id);
-        const index = empresas.findIndex(item => item.id === id);
-        const status = index >= 0 ? 200:400;
-        if(index >= 0){
-            empresas[index] = {id:parseInt(id), name, site};
+    async update(req, res){
+        try{
+            const id = parseInt(req.params.id)
+            const {name, site, status} = req.body
+            const retornoStatus = id >= 0 ? 200:400
+
+            const empresa = await Empresa.findByPk(id)
+            const novaEmpresa = await empresa.update({
+                nave, site, status
+            })
+            return res.status(retornoStatus).json(novaEmpresa)
+        }catch(e){
+            console.log("Erro: " + e)
         }
-        return res.status(status).json(empresas[index]);
     }
 
     //Excluir uma empresa
-    destroy(req, res){
-        const id = parseInt(req.params.id);
-        const index = empresas.findIndex(item => item.id === id);
-        const status = index >= 0 ? 200:404;
-        if(index >= 0){
-            empresas.splice(index, 1);
+    async destroy(req, res){
+        try{
+            const id = parseInt(req.params.id);
+            const empresa = await Empresa.findByPk(id)
+            const status = id >= 0 ? 200:404;
+
+            empresa.destroy()
+            return res.status(status).json();
+        }catch(e){
+            console.log("Erro: " + e)
         }
-        return res.status(status).json();
     }
 }
 

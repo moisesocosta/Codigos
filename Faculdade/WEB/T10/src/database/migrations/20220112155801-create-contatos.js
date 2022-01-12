@@ -2,7 +2,7 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable("empresas", { 
+        await queryInterface.createTable("contatos", { 
             id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
@@ -15,7 +15,7 @@ module.exports = {
                 allowNull: false,
             },
 
-            site: {
+            email: {
                 type: Sequelize.STRING,
                 allowNull: false,
                 unique: true,
@@ -29,12 +29,22 @@ module.exports = {
             updated_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
+            },
+
+            empresa_id: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: "empresas", key: "id"
+                },
+                onUpdate: "CASCADE",
+                onDelete: "CASCADE",
+                allowNull: false,
             }
         
         });
     },
 
-    down: async queryInterface => {
+    down: async (queryInterface) => {
         await queryInterface.dropTable("empresas")
-    }
-};
+    },
+}
