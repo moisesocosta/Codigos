@@ -24,7 +24,7 @@ int main(){
     }
 
     printf("\n");
-    printf("%d \n", q1(A, 4, 4));
+    q1(A, 4, 4);
 
     return 0;
 }

@@ -1,34 +1,11 @@
 #include <stdio.h>
 
-void q4(int *v, int n);
-int q5(int *x, int *y, int n);
 void q6(float *x, int n);
 
 int main(){
     float x[] = {-1.7, 3.0, 0.0, 1.5, 0.0, -1.7, 2.3, -1.7};
     q6(x, 8);
     return 0;
-}
-
-void q4(int *v, int n){
-    int max = v[0], min = v[0];
-
-    for(int i = 0; i < n; i++){
-        if(v[i] > max)
-            max = v[i];
-        if(v[i] < min)
-            min = v[i];
-    }
-    printf("max = %d\n", max);
-    printf("min = %d", min);
-}
-
-int q5(int *x, int *y, int n){
-    int s = 0;
-    for(int i = 0; i < n; i++){
-        s = s + x[i] * y[i];
-    }
-    return s;
 }
 
 void q6(float *x, int n){

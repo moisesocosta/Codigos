@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int q1(int **A, int m, int n);
-int q2a(int **M, int n);
 void q2b(int n);
 
 int main(){
@@ -27,46 +25,17 @@ int main(){
     }
 
     printf("\n");
-    printf("%d \n", q1(A, 4, 4));
-    printf("q2a: %d \n", q2a(A, 4));
+    q2a(A, 4);
     q2b(4);
 
     return 0;
 }
 
-int q1(int **A, int m, int n){
-    int  cont0, cont1;
-
-    printf("q1: ");
-    for(int i = 0; i < m; i++){
-        cont0 = 0;
-        cont1 = 0;
-        for (int j = 0; j < n; j++){
-            if(A[i][j] == 0)
-                cont0++;
-            if(A[i][j] == 1)
-                cont1++;
-        }
-        if(cont0 != n - 1 || cont1 != 1)
-            return 0;
-    }
-
-    for(int j = 0; j < m; j++){
-        cont0 = 0;
-        cont1 = 0;
-        for (int i = 0; i < n; i++){
-            if(A[i][j] == 0)
-                cont0++;
-            if(A[i][j] == 1)
-                cont1++;
-        }
-        if(cont0 != m - 1 || cont1 != 1)
-            return 0;
-    }
-}
 
 int q2a(int **M, int n){
     int s = 0, s1 = 0, i, j;
+
+    printf("q2a: ");
 
     for(i = 0; i < n; i++)
         s = s + M[i][j];

@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int q1(int **A, int m, int n);
-int q2a(int **M, int n);
-void q2b(int n);
 void q3a(int **A, int n, int k);
 
 int main(){
@@ -18,9 +15,6 @@ int main(){
             A[i][j] = 0;
 
     printf("\n");
-    printf("%d \n", q1(A, 4, 4));
-    printf("q2a: %d \n", q2a(A, 4));
-    q2b(4);
     
     A[0][1] = 1;
     A[1][2] = 1;
@@ -37,90 +31,6 @@ int main(){
     q3a(A, 4, 2);
 
     return 0;
-}
-
-int q1(int **A, int m, int n){
-    int  cont0, cont1;
-
-    printf("q1: ");
-    for(int i = 0; i < m; i++){
-        cont0 = 0;
-        cont1 = 0;
-        for (int j = 0; j < n; j++){
-            if(A[i][j] == 0)
-                cont0++;
-            if(A[i][j] == 1)
-                cont1++;
-        }
-        if(cont0 != n - 1 || cont1 != 1)
-            return 0;
-    }
-
-    for(int j = 0; j < m; j++){
-        cont0 = 0;
-        cont1 = 0;
-        for (int i = 0; i < n; i++){
-            if(A[i][j] == 0)
-                cont0++;
-            if(A[i][j] == 1)
-                cont1++;
-        }
-        if(cont0 != m - 1 || cont1 != 1)
-            return 0;
-    }
-}
-
-int q2a(int **M, int n){
-    int s = 0, s1 = 0, i, j;
-
-    for(i = 0; i < n; i++)
-        s = s + M[i][j];
-
-    for(j = 0; j < n; j++)
-        s1 = s1 + M[i][n - j - 1];
-
-    if(s != s1)
-        return 0;
-
-    for(i = 0; i < n; i++){
-        s1 = 0;
-        for(j = 0; j < n; j++){
-            s1 = s1 + M[i][j];
-        }
-        if(s != s1)
-            return 0;
-    }
-
-    for(j = 0; j < n; j++){
-        s1 = 0;
-        for(i = 0; i < n; i++){
-            s1 = s1 + M[i][j];
-        }
-        if(s != s1)
-            return 0;
-    }
-    return 1;
-}
-
-void q2b(int n){
-    int **A, i, j;
-
-    printf("q2b: \n");
-    A = (int**)malloc(n * sizeof(int*));
-    for(i = 0; i < 4; i++)
-        A[i] = (int*)malloc(n * sizeof(int));
-    
-    do{
-        for(i = 0; i < n; i++)
-            for(j = 0; j < n; j++)
-                A[i][j] = rand() % 4;
-    }while(q2a(A, n) != 1);
-    
-    for(i = 0; i < n; i++){
-        for(j = 0; j < n; j++)
-            printf("%d ");
-        printf("\n");
-    }
 }
 
 void q3a(int **A, int n, int k){
