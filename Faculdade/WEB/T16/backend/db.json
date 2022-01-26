@@ -1,0 +1,13 @@
+{
+    "users":[
+        {
+            "id": 1,
+            "name": "Rodrigo Valença",
+            "email": "rodrigovcf@ufc.br"
+        },{
+            "id": 2,
+            "name": "Gabriel Valença",
+            "email": "gabriel@ufc.br"
+        }
+    ]
+}
