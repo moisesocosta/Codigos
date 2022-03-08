@@ -1,0 +1,11 @@
+.btn{
+    --color-first: #9b59b6;
+
+    width: 200px;
+    height: 50px;
+    background-color: var(--color-first);
+    color: var(--color-gray-medium);
+    font-size: 1.8rem;
+    border: none;
+    line-height: 1em;
+}
