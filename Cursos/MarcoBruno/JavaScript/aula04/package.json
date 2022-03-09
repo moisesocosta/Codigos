@@ -1,0 +1,19 @@
+{
+  "name": "node-http-koajs",
+  "version": "1.0.0",
+  "description": "Explicando como faz pra criar um servidor com KoaJS",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "KoaJS"
+  ],
+  "author": "Moisés Oliveira",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1"
+  }
+}
