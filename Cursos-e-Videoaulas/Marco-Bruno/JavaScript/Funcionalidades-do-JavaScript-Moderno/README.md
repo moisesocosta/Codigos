@@ -1,4 +1,4 @@
-Como criar um servidor com NodeJS
+Funcionalidades do JavaScript Moderno
 
 ### Link da playlist
 
