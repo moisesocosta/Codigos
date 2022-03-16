@@ -1,4 +1,4 @@
-Introdução ao LaTeX(Curso Completo)
+# Introdução ao LaTeX(Curso Completo)
 
 ### Link da playlist
 

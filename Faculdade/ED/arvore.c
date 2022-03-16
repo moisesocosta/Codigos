@@ -63,7 +63,41 @@ void insercao_arvore(int x){
     }
 }
 
-//REMOCAO...
+NO* remover(NO* pt, int x){
+    if(pt == NULL){
+        return NULL;
+    }else if(pt->chave > x){
+        pt->esq = remover(pt->esq, x);
+    }else if(pt->chave < x){
+        pt->dir = remover(pt->dir, x);
+    }else{
+        if(pt->esq == NULL && pt->dir == NULL){
+            free(pt);
+            return NULL;
+        }else if(pt->esq == NULL){
+            NO* aux = pt;
+            pt = pt->dir;
+            free(aux);
+        }else if(pt->dir == NULL){
+            NO* aux = pt;
+            pt = pt->esq;
+            free(aux);
+        }else{
+            NO* aux = pt->esq;
+            pt = pt->esq;
+            free(aux);
+        }else{
+            NO* aux = pt->esq;
+            while(aux->dir != NULL){
+                aux = aux->dir;
+            }
+            pt->chave = aux->chave;
+            aux->chave = x;
+            pt->esq = remover(pt->esq, x);
+        }
+    }
+    return pt;
+}
 
 
 int main(){

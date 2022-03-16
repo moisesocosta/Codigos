@@ -1,2 +1,2 @@
 # Codigos
-Códigos feitos para trabalhos da faculdade ou cursos remotos
+Códigos feitos para trabalhos da faculdade ou em cursos remotos

@@ -1,4 +1,4 @@
-Componentes da vida com HTML, CSS e Javascript
+# Componentes da vida com HTML, CSS e Javascript
 
 ### Link da playlist
 

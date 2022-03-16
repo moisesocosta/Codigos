@@ -1,4 +1,4 @@
-Funcionalidades do JavaScript Moderno
+# Funcionalidades do JavaScript Moderno
 
 ### Link da playlist
 
