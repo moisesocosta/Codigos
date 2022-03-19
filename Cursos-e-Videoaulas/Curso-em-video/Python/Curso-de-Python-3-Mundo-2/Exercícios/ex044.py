@@ -23,3 +23,4 @@ else:
     total = preco
     print('OPÇÃO INVÁLIDA de pagamento. Tente novamente!')
 print('Sua compra de R${:.2f} vai custar R${:.2f} no final'.format(preco, total))
+

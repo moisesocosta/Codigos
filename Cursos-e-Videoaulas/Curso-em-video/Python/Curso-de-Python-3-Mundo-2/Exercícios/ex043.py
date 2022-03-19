@@ -12,3 +12,4 @@ elif 30 <= imc <= 40:
     print('Você está em OBESIDADE')
 elif imc >= 40:
     print('Você está em OBESIDADE MÓRBIDA, cuidado!')
+    

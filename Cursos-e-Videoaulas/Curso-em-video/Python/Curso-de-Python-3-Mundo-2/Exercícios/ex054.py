@@ -11,3 +11,4 @@ for pess in range(1, 8):
         totmenor += 1
 print('Ao todo tivemos {} pessoas maiores de idade'.format(totmaior))
 print('E também tivemos {} pessoas menores de idade'.format(totmenor))
+

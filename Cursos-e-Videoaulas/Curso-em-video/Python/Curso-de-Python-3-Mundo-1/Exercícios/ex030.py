@@ -4,3 +4,4 @@ if resultado == 0:
     print('O número {} é PAR')
 else:
     print('O número {} é ÍMPAR')
+    

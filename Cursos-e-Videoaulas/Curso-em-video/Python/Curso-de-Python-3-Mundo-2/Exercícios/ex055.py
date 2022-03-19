@@ -12,3 +12,4 @@ for p in range(1, 6):
             menor = peso
 print('O maior peso lido foi de {}Kg'.format(maior))
 print('O menor peso lido foi de {}Kg'.format(menor))
+

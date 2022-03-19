@@ -8,3 +8,4 @@ elif media < 5:
     print('O aluno está REPROVADO')
 elif media > 7:
     print('O aluno está APROVADO')
+    
