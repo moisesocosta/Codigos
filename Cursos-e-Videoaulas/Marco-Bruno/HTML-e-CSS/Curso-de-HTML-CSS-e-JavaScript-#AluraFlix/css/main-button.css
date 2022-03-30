@@ -1,0 +1,20 @@
+.main-button{
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    width: 420px;
+    height: 55px;
+    border: none;
+    border-radius: 0;
+    background-color: var(--color-second);
+    font-family: inherit;
+    color: var(--color-third);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--color-black-first);
+    transition: transform 200ms ease-in-out;
+}
+
+.main-button:hover{
+    transform: scale(1.05);
+}
