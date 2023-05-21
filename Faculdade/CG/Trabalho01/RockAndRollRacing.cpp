@@ -2,166 +2,148 @@
 #include <cmath>
 
 // Dimensões da janela
-int width = 800;
-int height = 600;
+const int WIDTH = 800;
+const int HEIGHT = 600;
 
-// Parâmetros do carro
-float carX = 400.0f;
-float carY = 300.0f;
+// Posição e direção inicial do carro
+float carPositionX = 0.0f;
+float carPositionY = 0.0f;
 float carAngle = 0.0f;
+
+// Velocidade e direção do carro
 float carSpeed = 0.0f;
-float carMaxSpeed = 5.0f;
-float carAcceleration = 0.05f;
-float carDeceleration = 0.1f;
-float carSteeringAngle = 0.0f;
-float carMaxSteeringAngle = 45.0f;
-float carSteeringSpeed = 2.0f;
+float carDirection = 0.0f;
 
 // Função para desenhar o carro
 void drawCar() {
     glPushMatrix();
-    glTranslatef(carX, carY, 0.0f);
+    glTranslatef(carPositionX, carPositionY, 0.0f);
     glRotatef(carAngle, 0.0f, 0.0f, 1.0f);
 
+    glColor3f(1.0f, 0.0f, 0.0f); // Cor do carro (vermelho)
+
+    // Desenho do corpo do carro (retângulo)
     glBegin(GL_QUADS);
-    glColor3f(0.0f, 1.0f, 0.0f); // Cor verde
-    glVertex2f(-20, 10);
-    glVertex2f(-20, -10);
-    glVertex2f(20, -10);
-    glVertex2f(20, 10);
+    glVertex2f(-20.0f, -10.0f);
+    glVertex2f(-20.0f, 10.0f);
+    glVertex2f(20.0f, 10.0f);
+    glVertex2f(20.0f, -10.0f);
     glEnd();
+
+    // Desenho das rodas dianteiras (círculos)
+    glColor3f(0.0f, 0.0f, 0.0f); // Cor das rodas (preto)
+
+    glPushMatrix();
+    glTranslatef(-15.0f, -10.0f, 0.0f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(0.0f, 0.0f); // Centro do círculo
+    for (float angle = 0.0f; angle <= 2.0f * M_PI; angle += 0.1f) {
+        float x = 10.0f * std::cos(angle);
+        float y = 10.0f * std::sin(angle);
+        glVertex2f(x, y);
+    }
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-15.0f, 10.0f, 0.0f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(0.0f, 0.0f); // Centro do círculo
+    for (float angle = 0.0f; angle <= 2.0f * M_PI; angle += 0.1f) {
+        float x = 10.0f * std::cos(angle);
+        float y = 10.0f * std::sin(angle);
+        glVertex2f(x, y);
+    }
+    glEnd();
+    glPopMatrix();
+
+    // Desenho da roda traseira (círculo)
+    glPushMatrix();
+    glTranslatef(15.0f, 0.0f, 0.0f);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(0.0f, 0.0f); // Centro do círculo
+    for (float angle = 0.0f; angle <= 2.0f * M_PI; angle += 0.1f) {
+        float x = 10.0f * std::cos(angle);
+        float y = 10.0f * std::sin(angle);
+        glVertex2f(x, y);
+    }
+    glEnd();
+    glPopMatrix();
 
     glPopMatrix();
 }
 
 // Função para desenhar o circuito
-void drawCircuit() {
+void drawTrack() {
+    glColor3f(0.0f, 1.0f, 0.0f); // Cor do circuito (verde)
+
+    const float radiusX = 200.0f;
+    const float radiusY = 100.0f;
+    const int numSegments = 100;
+
     glBegin(GL_LINE_LOOP);
-    glColor3f(1.0f, 1.0f, 1.0f); // Cor branca
-
-    float radius = 200.0f;
-    float centerX = width / 2.0f;
-    float centerY = height / 2.0f;
-    int numSegments = 100;
-    float angleStep = 2.0f * M_PI / numSegments;
-
     for (int i = 0; i < numSegments; ++i) {
-        float angle = i * angleStep;
-        float x = centerX + radius * cos(angle);
-        float y = centerY + radius * sin(angle);
+        float theta = 2.0f * M_PI * static_cast<float>(i) / static_cast<float>(numSegments);
+        float x = radiusX * std::cos(theta);
+        float y = radiusY * std::sin(theta);
         glVertex2f(x, y);
     }
-
     glEnd();
 }
 
-// Função para atualizar o movimento do carro
-void updateCarMovement() {
-    // Atualizar a posição do carro com base na velocidade e ângulo
-    carX += carSpeed * sin(carAngle * M_PI / 180.0f);
-    carY -= carSpeed * cos(carAngle * M_PI / 180.0f);
+// Função para atualizar a lógica do jogo
+void update() {
+    // Atualizar a posição do carro com base na velocidade e direção
+    carPositionX += carSpeed * std::cos(carDirection);
+    carPositionY += carSpeed * std::sin(carDirection);
 
-    // Atualizar o ângulo do carro com base no ângulo de direção
-    carAngle += carSteeringAngle;
-
-    // Limitar a velocidade máxima do carro
-    if (carSpeed > carMaxSpeed) {
-        carSpeed = carMaxSpeed;
-    }
-
-    // Desacelerar o carro quando não há aceleração ou ré
-    if (carSpeed > 0.0f && carAcceleration == 0.0f) {
-        carSpeed -= carDeceleration;
-        if (carSpeed < 0.0f) {
-            carSpeed = 0.0f;
-        }
-    } else if (carSpeed < 0.0f && carAcceleration == 0.0f) {
-        carSpeed += carDeceleration;
-        if (carSpeed > 0.0f) {
-            carSpeed = 0.0f;
-        }
-    }
-
-    // Limitar o ângulo de direção máximo
-    if (carSteeringAngle > carMaxSteeringAngle) {
-        carSteeringAngle = carMaxSteeringAngle;
-    } else if (carSteeringAngle < -carMaxSteeringAngle) {
-        carSteeringAngle = -carMaxSteeringAngle;
-    }
+    glutPostRedisplay(); // Redesenha a cena
 }
 
-// Função para lidar com eventos de teclado
-void keyboardEvent(unsigned char key, int x, int y) {
+// Função para manipular eventos de teclado
+void keyboard(unsigned char key, int x, int y) {
     switch (key) {
-        case 'w': // Acelerar para frente quando a tecla 'w' for pressionada
-            carAcceleration = 0.05f;
+        case 'w': // Acelerar
+            carSpeed += 0.1f;
             break;
-        case 's': // Acelerar para trás quando a tecla 's' for pressionada
-            carAcceleration = -0.05f;
+        case 's': // Reverter
+            carSpeed -= 0.1f;
             break;
-        case 'a': // Virar para a esquerda quando a tecla 'a' for pressionada
-            carSteeringAngle = carSteeringSpeed;
+        case 'a': // Virar à esquerda
+            carAngle -= 5.0f;
+            carDirection = carAngle * M_PI / 180.0f;
             break;
-        case 'd': // Virar para a direita quando a tecla 'd' for pressionada
-            carSteeringAngle = -carSteeringSpeed;
-            break;
-    }
-}
-
-// Função para lidar com eventos de teclado soltos
-void keyboardUpEvent(unsigned char key, int x, int y) {
-    switch (key) {
-        case 'w': // Parar de acelerar para frente quando a tecla 'w' for liberada
-        case 's': // Parar de acelerar para trás quando a tecla 's' for liberada
-            carAcceleration = 0.0f;
-            break;
-        case 'a': // Parar de virar para a esquerda quando a tecla 'a' for liberada
-        case 'd': // Parar de virar para a direita quando a tecla 'd' for liberada
-            carSteeringAngle = 0.0f;
+        case 'd': // Virar à direita
+            carAngle += 5.0f;
+            carDirection = carAngle * M_PI / 180.0f;
             break;
     }
 }
 
-// Função de renderização
-void renderScene() {
+// Função de desenho (callback)
+void display() {
     glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, width, 0, height);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    // Desenhar o circuito
-    drawCircuit();
-
-    // Atualizar o movimento do carro
-    updateCarMovement();
-
-    // Desenhar o carro
+    drawTrack();
     drawCar();
 
     glFlush();
+    glutSwapBuffers();
 }
 
-// Função de atualização da cena
-void updateScene(int value) {
-    glutPostRedisplay();
-    glutTimerFunc(16, updateScene, 0);
-}
-
-// Função principal
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(width, height);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+    glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Rock and Roll Racing");
 
-    glutDisplayFunc(renderScene);
-    glutKeyboardFunc(keyboardEvent);
-    glutKeyboardUpFunc(keyboardUpEvent);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-WIDTH/2, WIDTH/2, -HEIGHT/2, HEIGHT/2, -1.0, 1.0);
 
-    glutTimerFunc(16, updateScene, 0);
+    glutDisplayFunc(display);
+    glutIdleFunc(update);
+    glutKeyboardFunc(keyboard);
 
     glutMainLoop();
 
