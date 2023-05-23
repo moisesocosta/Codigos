@@ -1,5 +1,18 @@
 #include <GL/glut.h>
 #include <cmath>
+#include <vector>
+
+// Estrutura de dados para representar um carro adversário
+struct EnemyCar {
+    float positionX;
+    float positionY;
+    float angle;
+    float speed;
+    float direction;
+};
+
+// Vetor para armazenar os carros adversários
+std::vector<EnemyCar> enemyCars;
 
 // Dimensões da janela
 const int WIDTH = 800;
@@ -73,6 +86,52 @@ void drawCar() {
     glPopMatrix();
 }
 
+// Função para desenhar um carro adversário
+void drawEnemyCar(const EnemyCar& enemyCar) {
+    glPushMatrix();
+    glTranslatef(enemyCar.positionX, enemyCar.positionY, 0.0f);
+    glRotatef(enemyCar.angle, 0.0f, 0.0f, 1.0f);
+
+    glColor3f(0.0f, 0.0f, 1.0f); // Cor do carro adversário (azul)
+
+    // Desenho do corpo do carro adversário (retângulo)
+    glBegin(GL_QUADS);
+    glVertex2f(-20.0f, -10.0f);
+    glVertex2f(-20.0f, 10.0f);
+    glVertex2f(20.0f, 10.0f);
+    glVertex2f(20.0f, -10.0f);
+    glEnd();
+
+    glPopMatrix();
+}
+
+// Função para desenhar todos os carros adversários
+void drawEnemyCars() {
+    for (const auto& enemyCar : enemyCars) {
+        drawEnemyCar(enemyCar);
+    }
+}
+
+// Função para atualizar a lógica de movimento dos carros adversários
+void updateEnemyCars() {
+    for (auto& enemyCar : enemyCars) {
+        // Lógica de movimento e comportamento do carro adversário
+        // Exemplo: carro adversário se move em linha reta
+        enemyCar.positionX += enemyCar.speed * std::cos(enemyCar.direction);
+        enemyCar.positionY += enemyCar.speed * std::sin(enemyCar.direction);
+
+        // Adicione aqui a lógica de comportamento adicional para os carros adversários
+    }
+}
+
+// Função para inicializar os carros adversários
+void initializeEnemyCars() {
+    // Exemplo: criar três carros adversários com diferentes posições, velocidades e direções
+    enemyCars.push_back({-200.0f, 0.0f, 0.0f, 1.0f, 0.0f}); 
+    enemyCars.push_back({0.0f, 200.0f, 90.0f, 1.5f, M_PI / 2.0f}); 
+    enemyCars.push_back({200.0f, 0.0f, 180.0f, 2.0f, M_PI}); 
+}
+
 // Função para desenhar o circuito
 void drawTrack() {
     glColor3f(0.0f, 1.0f, 0.0f); // Cor do circuito (verde)
@@ -93,11 +152,18 @@ void drawTrack() {
 
 // Função para atualizar a lógica do jogo
 void update() {
-    // Atualizar a posição do carro com base na velocidade e direção
-    carPositionX += carSpeed * std::cos(carDirection);
-    carPositionY += carSpeed * std::sin(carDirection);
+    updateEnemyCars();
 
     glutPostRedisplay(); // Redesenha a cena
+}
+
+// Função de redimensionamento da janela
+void reshape(int width, int height) {
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-WIDTH/2, WIDTH/2, -HEIGHT/2, HEIGHT/2, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
 }
 
 // Função para manipular eventos de teclado
@@ -120,12 +186,11 @@ void keyboard(unsigned char key, int x, int y) {
     }
 }
 
-// Função de desenho (callback)
+// Função para desenhar a cena
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    drawTrack();
-    drawCar();
+    drawEnemyCars();
 
     glFlush();
     glutSwapBuffers();
@@ -137,13 +202,13 @@ int main(int argc, char** argv) {
     glutInitWindowSize(WIDTH, HEIGHT);
     glutCreateWindow("Rock and Roll Racing");
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-WIDTH/2, WIDTH/2, -HEIGHT/2, HEIGHT/2, -1.0, 1.0);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Cor de fundo da janela (branco)
 
     glutDisplayFunc(display);
     glutIdleFunc(update);
-    glutKeyboardFunc(keyboard);
+    glutReshapeFunc(reshape);
+
+    initializeEnemyCars();
 
     glutMainLoop();
 
