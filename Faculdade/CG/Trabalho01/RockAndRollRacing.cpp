@@ -41,7 +41,9 @@ void drawCar() {
 }
 
 // Função de desenho principal
+// Função de desenho principal
 void drawScene() {
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f); // Define a cor de fundo para vermelho
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
@@ -59,6 +61,7 @@ void drawScene() {
 
     glutSwapBuffers();
 }
+
 
 // Função de atualização de estado
 void update(int value) {
