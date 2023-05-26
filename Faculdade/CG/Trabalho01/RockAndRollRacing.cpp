@@ -23,6 +23,7 @@ void drawCar() {
     glRotatef(carAngle, 0.0f, 0.0f, 1.0f);
 
     // Desenhe o corpo do carro
+    glColor3f(0.0f, 0.0f, 1.0f);
     glBegin(GL_POLYGON);
     glVertex2f(-10.0f, -5.0f);
     glVertex2f(-10.0f, 5.0f);
@@ -43,18 +44,33 @@ void drawCar() {
 // Função de desenho principal
 // Função de desenho principal
 void drawScene() {
-    glClearColor(1.0f, 0.0f, 0.0f, 1.0f); // Define a cor de fundo para vermelho
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Define a cor de fundo para preto
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
-    // Desenhe o circuito fechado
+    glLineWidth(20.0f);
+
+    glPushMatrix();
+    glScalef(5.0f, 5.0f, 1.0f); // Aumenta o tamanho em 1.5 vezes
+    // Desenhe o circuito no formato do símbolo do infinito
     glBegin(GL_LINE_LOOP);
     glColor3f(1.0f, 1.0f, 1.0f);
-    glVertex2f(-50.0f, -50.0f);
-    glVertex2f(-50.0f, 50.0f);
-    glVertex2f(50.0f, 50.0f);
-    glVertex2f(50.0f, -50.0f);
+
+    const float radius = 40.0f;
+    const float centerX = 0.0f;
+    const float centerY = 0.0f;
+    const float numSegments = 100;
+    const float angleIncrement = 2.0f * 3.14159f / numSegments;
+
+    for (int i = 0; i < numSegments; ++i) {
+        float angle = i * angleIncrement;
+        float x = centerX + radius * std::sin(angle);
+        float y = centerY + radius * std::sin(angle * 2.0f);
+
+        glVertex2f(x, y);
+    }
     glEnd();
+    glPopMatrix();
 
     // Desenhe o carro
     drawCar();
