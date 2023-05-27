@@ -14,7 +14,7 @@ float carAngle = 0.0f;
 // Velocidade e aceleração do carro
 float carSpeed = 0.0f;
 float carAcceleration = 0.01f;
-float carMaxSpeed = 0.1f;
+float carMaxSpeed = 0.5f;
 
 // Função para desenhar o carro
 void drawCar() {
@@ -41,7 +41,6 @@ void drawCar() {
     glPopMatrix();
 }
 
-// Função de desenho principal
 // Função de desenho principal
 void drawScene() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Define a cor de fundo para preto
