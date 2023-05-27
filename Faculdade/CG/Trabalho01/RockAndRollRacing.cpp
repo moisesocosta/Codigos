@@ -50,7 +50,7 @@ void drawScene() {
     glLineWidth(20.0f);
 
     glPushMatrix();
-    glScalef(5.0f, 5.0f, 1.0f); // Aumenta o tamanho em 1.5 vezes
+    glScalef(5.0f, 5.0f, 1.0f); // Aumenta o tamanho em 5.0 vezes
     // Desenhe o circuito no formato do símbolo do infinito
     glBegin(GL_LINE_LOOP);
     glColor3f(1.0f, 1.0f, 1.0f);
