@@ -221,8 +221,14 @@ void update(int value) {
         float distance = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
 
         if (distance <= obstaculos[i].radius) {
-            // Colisão detectada! Implemente a lógica adequada aqui.
-            // Por exemplo, reinicie o jogo, reduza a velocidade do carro, etc.
+            // Colisão detectada! Reduza a velocidade do carro
+            carro.speed *= 0.5f;
+
+            // Reposicione o carro para evitar sobreposição com o obstáculo
+            float collisionAngle = std::atan2(dy, dx);
+            float safeDistance = obstaculos[i].radius + 1.0f;
+            carro.x = obstaculos[i].x + safeDistance * std::cos(collisionAngle);
+            carro.y = obstaculos[i].y + safeDistance * std::sin(collisionAngle);
         }
     }
 
