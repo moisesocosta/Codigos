@@ -1,121 +1,267 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <GL/glut.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#include <ctime>
 
 // Dimensões da janela
 int windowWidth = 800;
 int windowHeight = 600;
 
-// Posição e direção do carro
-float carX = 0.0f;
-float carY = 0.0f;
-float carAngle = 0.0f;
+// Classe para representar o carro
+class Carro {
+public:
+    float x;
+    float y;
+    float z;
+    float angle;
+    float speed;
+    float acceleration;
+    float maxSpeed;
 
-// Velocidade e aceleração do carro
-float carSpeed = 0.0f;
-float carAcceleration = 0.01f;
-float carMaxSpeed = 0.5f;
+    Carro(float startX, float startY, float startZ, float startAngle, float startMaxSpeed)
+        : x(startX), y(startY), z(startZ), angle(startAngle), speed(0.0f),
+          acceleration(0.01f), maxSpeed(startMaxSpeed) {}
 
-// Função para desenhar o carro
-void drawCar() {
-    glPushMatrix();
-    glTranslatef(carX, carY, 0.0f);
-    glRotatef(carAngle, 0.0f, 0.0f, 1.0f);
+    void update() {
+        float dx = speed * std::cos(angle * 3.14159f / 180.0f);
+        float dy = speed * std::sin(angle * 3.14159f / 180.0f);
+        x += dx;
+        y += dy;
+    }
 
-    // Desenhe o corpo do carro
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glBegin(GL_POLYGON);
-    glVertex2f(-10.0f, -5.0f);
-    glVertex2f(-10.0f, 5.0f);
-    glVertex2f(10.0f, 5.0f);
-    glVertex2f(10.0f, -5.0f);
-    glEnd();
+    void accelerate() {
+        speed += acceleration;
+        if (speed > maxSpeed)
+            speed = maxSpeed;
+    }
 
-    // Desenhe as rodas do carro
-    glTranslatef(-8.0f, -5.0f, 0.0f);
-    glColor3f(0.0f, 0.0f, 0.0f);
-    glutSolidTorus(1.0f, 2.0f, 10, 10);
-    glTranslatef(16.0f, 0.0f, 0.0f);
-    glutSolidTorus(1.0f, 2.0f, 10, 10);
+    void decelerate() {
+        speed -= acceleration;
+        if (speed < -maxSpeed)
+            speed = -maxSpeed;
+    }
 
-    glPopMatrix();
+    void turnLeft() {
+        angle += 5.0f;
+    }
+
+    void turnRight() {
+        angle -= 5.0f;
+    }
+
+    void draw() {
+        glPushMatrix();
+        glTranslatef(x, y, z);
+        glRotatef(angle, 0.0f, 0.0f, 1.0f);
+
+        // Desenhe o corpo do carro
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        glVertex3f(-1.0f, -1.0f, 0.0f);
+        glVertex3f(-1.0f, 1.0f, 0.0f);
+        glVertex3f(1.0f, 1.0f, 0.0f);
+        glVertex3f(1.0f, -1.0f, 0.0f);
+        glEnd();
+
+        // Desenhe as rodas do carro
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glTranslatef(-0.8f, -0.8f, 0.0f);
+        glBegin(GL_QUADS);
+        glVertex3f(-0.2f, -0.2f, 0.0f);
+        glVertex3f(-0.2f, 0.2f, 0.0f);
+        glVertex3f(0.2f, 0.2f, 0.0f);
+        glVertex3f(0.2f, -0.2f, 0.0f);
+        glEnd();
+
+        glTranslatef(1.6f, 0.0f, 0.0f);
+        glBegin(GL_QUADS);
+        glVertex3f(-0.2f, -0.2f, 0.0f);
+        glVertex3f(-0.2f, 0.2f, 0.0f);
+        glVertex3f(0.2f, 0.2f, 0.0f);
+        glVertex3f(0.2f, -0.2f, 0.0f);
+        glEnd();
+
+        glPopMatrix();
+    }
+};
+
+// Classe para representar os obstáculos
+class Obstaculo {
+public:
+    float x;
+    float y;
+    float z;
+    float radius;
+
+    Obstaculo(float startX, float startY, float startZ, float startRadius)
+        : x(startX), y(startY), z(startZ), radius(startRadius) {}
+
+    void draw() {
+        glPushMatrix();
+        glTranslatef(x, y, z);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glutSolidSphere(radius, 16, 16);
+        glPopMatrix();
+    }
+};
+
+// Classe para representar o cenário
+class Cenario {
+public:
+    GLuint groundTexture;
+
+    Cenario(const char* groundTexturePath) {
+        groundTexture = loadTexture(groundTexturePath);
+    }
+
+    GLuint loadTexture(const char* filename) {
+        int width, height, channels;
+        unsigned char* image = stbi_load(filename, &width, &height, &channels, 0);
+        if (!image) {
+            std::cerr << "Erro ao carregar a textura: " << filename << std::endl;
+            return 0;
+        }
+
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Configuração da textura
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+        stbi_image_free(image);
+
+        return textureID;
+    }
+
+    void drawGround() {
+        glBindTexture(GL_TEXTURE_2D, groundTexture);
+
+        glPushMatrix();
+        glTranslatef(0.0f, 0.0f, -0.1f);
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-50.0f, -50.0f, 0.0f);
+        glTexCoord2f(0.0f, 10.0f);
+        glVertex3f(-50.0f, 50.0f, 0.0f);
+        glTexCoord2f(10.0f, 10.0f);
+        glVertex3f(50.0f, 50.0f, 0.0f);
+        glTexCoord2f(10.0f, 0.0f);
+        glVertex3f(50.0f, -50.0f, 0.0f);
+        glEnd();
+
+        glPopMatrix();
+    }
+};
+
+// Variáveis globais para o carro, os obstáculos e o cenário
+Carro carro(0.0f, 0.0f, 0.0f, 0.0f, 0.5f);
+Cenario cenario("ground_texture.jpg");
+std::vector<Obstaculo> obstaculos;
+
+// Variáveis globais para controle de câmera
+float cameraX = 0.0f;
+float cameraY = 0.0f;
+float cameraZ = 10.0f;
+float cameraLookX = 0.0f;
+float cameraLookY = 0.0f;
+float cameraLookZ = 0.0f;
+
+// Função para gerar obstáculos aleatórios
+void gerarObstaculos() {
+    srand(static_cast<unsigned>(time(NULL)));
+
+    for (int i = 0; i < 10; i++) {
+        float startX = static_cast<float>(rand() % 100 - 50);
+        float startY = static_cast<float>(rand() % 100 - 50);
+        float startZ = 0.0f;
+        float startRadius = static_cast<float>(rand() % 4 + 1);
+
+        obstaculos.push_back(Obstaculo(startX, startY, startZ, startRadius));
+    }
 }
 
 // Função de desenho principal
 void drawScene() {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Define a cor de fundo para preto
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    glLineWidth(20.0f);
+    gluLookAt(cameraX, cameraY, cameraZ, cameraLookX, cameraLookY, cameraLookZ, 0.0f, 1.0f, 0.0f);
 
-    glPushMatrix();
-    glScalef(5.0f, 5.0f, 1.0f); // Aumenta o tamanho em 5.0 vezes
-    // Desenhe o circuito no formato do símbolo do infinito
-    glBegin(GL_LINE_LOOP);
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glEnable(GL_TEXTURE_2D);
 
-    const float radius = 40.0f;
-    const float centerX = 0.0f;
-    const float centerY = 0.0f;
-    const float numSegments = 100;
-    const float angleIncrement = 2.0f * 3.14159f / numSegments;
+    cenario.drawGround();
+    carro.draw();
 
-    for (int i = 0; i < numSegments; ++i) {
-        float angle = i * angleIncrement;
-        float x = centerX + radius * std::sin(angle);
-        float y = centerY + radius * std::sin(angle * 2.0f);
-
-        glVertex2f(x, y);
+    for (int i = 0; i < obstaculos.size(); i++) {
+        obstaculos[i].draw();
     }
-    glEnd();
-    glPopMatrix();
-
-    // Desenhe o carro
-    drawCar();
 
     glutSwapBuffers();
 }
 
-
 // Função de atualização de estado
 void update(int value) {
-    // Atualize a posição e a direção do carro com base na velocidade
-    carX += carSpeed * std::cos(carAngle * 3.14159f / 180.0f);
-    carY += carSpeed * std::sin(carAngle * 3.14159f / 180.0f);
+    carro.update();
 
-    // Verifique se o carro ultrapassou os limites do circuito
-    if (carX < -50.0f)
-        carX = -50.0f;
-    if (carX > 50.0f)
-        carX = 50.0f;
-    if (carY < -50.0f)
-        carY = -50.0f;
-    if (carY > 50.0f)
-        carY = 50.0f;
+    // Verifica colisões com obstáculos
+    for (int i = 0; i < obstaculos.size(); i++) {
+        float dx = obstaculos[i].x - carro.x;
+        float dy = obstaculos[i].y - carro.y;
+        float distance = std::sqrt(std::pow(dx, 2) + std::pow(dy, 2));
+
+        if (distance <= obstaculos[i].radius) {
+            // Colisão detectada! Implemente a lógica adequada aqui.
+            // Por exemplo, reinicie o jogo, reduza a velocidade do carro, etc.
+        }
+    }
 
     glutPostRedisplay();
     glutTimerFunc(16, update, 0);
 }
 
-// Função de teclado para controlar o carro
+// Função de teclado para controlar o carro e a câmera
 void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'w':
-            carSpeed += carAcceleration;
-            if (carSpeed > carMaxSpeed)
-                carSpeed = carMaxSpeed;
+            carro.accelerate();
             break;
         case 's':
-            carSpeed -= carAcceleration;
-            if (carSpeed < -carMaxSpeed)
-                carSpeed = -carMaxSpeed;
+            carro.decelerate();
             break;
         case 'a':
-            carAngle += 5.0f;
+            carro.turnLeft();
             break;
         case 'd':
-            carAngle -= 5.0f;
+            carro.turnRight();
+            break;
+        case 'q':
+            cameraX -= 1.0f;
+            break;
+        case 'e':
+            cameraX += 1.0f;
+            break;
+        case 'r':
+            cameraY += 1.0f;
+            break;
+        case 'f':
+            cameraY -= 1.0f;
+            break;
+        case 't':
+            cameraZ += 1.0f;
+            break;
+        case 'g':
+            cameraZ -= 1.0f;
             break;
     }
 }
@@ -123,15 +269,18 @@ void keyboard(unsigned char key, int x, int y) {
 // Função principal
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(windowWidth, windowHeight);
     glutCreateWindow("Rock and Roll Racing");
 
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-windowWidth / 2, windowWidth / 2, -windowHeight / 2, windowHeight / 2, -1, 1);
+    gluPerspective(45.0f, static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.0f);
     glMatrixMode(GL_MODELVIEW);
+
+    gerarObstaculos();
 
     glutDisplayFunc(drawScene);
     glutTimerFunc(16, update, 0);
