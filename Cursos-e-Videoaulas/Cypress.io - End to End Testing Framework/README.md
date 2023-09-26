@@ -1,5 +1,7 @@
-# Webdriver-Cypress
+# Cypress.io - End to End Testing Framework
 
-e2e - arquivos de testes - .spec.js
-fixtures - dados e arquivos de mocks
-support - arquivos auxiliares e de suporte ao teste
+### Link da playlist
+
+```
+https://www.youtube.com/playlist?list=PLzDWIPKHyNmK9NX9_ng2IdrkEr8L4WwB0
+```
